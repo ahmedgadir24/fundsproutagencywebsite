@@ -28,7 +28,7 @@ export default function LoginPage() {
       setError(error.message);
       setLoading(false);
     } else {
-      router.push("/grants");
+      router.push("/dashboard");
       router.refresh();
     }
   };
@@ -93,10 +93,10 @@ export default function LoginPage() {
           <p className="mt-6 text-center text-sm text-card-fg/50">
             Don&apos;t have an account?{" "}
             <Link
-              href="/auth/signup"
+              href="/get-started"
               className="text-primary hover:text-secondary transition-colors"
             >
-              Sign up
+              Get access
             </Link>
           </p>
         </div>

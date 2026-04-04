@@ -6,12 +6,12 @@ import { Grant } from "@/lib/types";
 import { createClient } from "@/lib/supabase/server";
 
 async function getGrants(): Promise<Grant[]> {
-  // Try to fetch from Supabase first, fall back to dummy data
   try {
     const supabase = await createClient();
     const { data, error } = await supabase
-      .from("grants")
+      .from("gp_grants")
       .select("*")
+      .eq("is_active", true)
       .order("created_at", { ascending: false });
 
     if (!error && data && data.length > 0) {
@@ -38,7 +38,7 @@ async function checkPaymentStatus(): Promise<boolean> {
     if (!user) return false;
 
     const { data: profile } = await supabase
-      .from("profiles")
+      .from("gp_profiles")
       .select("has_paid")
       .eq("id", user.id)
       .single();
@@ -58,13 +58,13 @@ export default async function GrantsPage() {
   return (
     <>
       <Navbar />
-      <main className="pt-24 pb-16 px-4 sm:px-6 lg:px-8">
+      <main className="pt-20 sm:pt-24 pb-20 sm:pb-16 px-4 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-6xl">
-          <div className="mb-8">
-            <h1 className="text-3xl sm:text-4xl text-foreground tracking-[-0.07em]">
+          <div className="mb-6 sm:mb-8">
+            <h1 className="text-2xl sm:text-3xl lg:text-4xl text-foreground tracking-[-0.07em]">
               Grant Database
             </h1>
-            <p className="mt-2 text-card-fg/70">
+            <p className="mt-2 text-sm sm:text-base text-card-fg/70">
               Browse and search our curated collection of grants. Updated
               monthly.
             </p>

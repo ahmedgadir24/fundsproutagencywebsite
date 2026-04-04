@@ -19,7 +19,7 @@ async function getGrant(id: string): Promise<Grant | null> {
   try {
     const supabase = await createClient();
     const { data, error } = await supabase
-      .from("grants")
+      .from("gp_grants")
       .select("*")
       .eq("id", id)
       .single();
@@ -47,7 +47,7 @@ async function checkPaymentStatus(): Promise<boolean> {
     if (!user) return false;
 
     const { data: profile } = await supabase
-      .from("profiles")
+      .from("gp_profiles")
       .select("has_paid")
       .eq("id", user.id)
       .single();
@@ -66,6 +66,12 @@ function formatCurrency(amount: number) {
   }).format(amount);
 }
 
+const complexityColors: Record<string, string> = {
+  Simple: "bg-primary/20 text-primary",
+  Moderate: "bg-yellow-500/20 text-yellow-400",
+  Complex: "bg-red-500/20 text-red-400",
+};
+
 export default async function GrantDetailPage({
   params,
 }: {
@@ -79,16 +85,10 @@ export default async function GrantDetailPage({
 
   if (!grant) notFound();
 
-  const competitivenessColors = {
-    low: "bg-primary/20 text-primary",
-    medium: "bg-yellow-500/20 text-yellow-400",
-    high: "bg-red-500/20 text-red-400",
-  };
-
   return (
     <>
       <Navbar />
-      <main className="pt-24 pb-16 px-4 sm:px-6 lg:px-8">
+      <main className="pt-20 sm:pt-24 pb-20 sm:pb-16 px-4 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-4xl">
           <Link
             href="/grants"
@@ -100,108 +100,112 @@ export default async function GrantDetailPage({
 
           <div className="flex flex-wrap items-center gap-2 mb-4">
             <span className="inline-flex items-center rounded-full bg-primary/10 px-3 py-1 text-xs font-medium text-primary">
-              {grant.grant_type}
+              {grant.funding_type}
             </span>
             <span className="inline-flex items-center rounded-full bg-alt/20 px-3 py-1 text-xs font-medium text-card-fg">
               {grant.focus_area}
             </span>
-            {grant.competitiveness && (
-              <span
-                className={`inline-flex items-center rounded-full px-3 py-1 text-xs font-medium ${competitivenessColors[grant.competitiveness]}`}
-              >
-                {grant.competitiveness} competition
-              </span>
-            )}
+            {grant.estimated_complexity &&
+              complexityColors[grant.estimated_complexity] && (
+                <span
+                  className={`inline-flex items-center rounded-full px-3 py-1 text-xs font-medium ${complexityColors[grant.estimated_complexity]}`}
+                >
+                  {grant.estimated_complexity}
+                </span>
+              )}
           </div>
 
-          <h1 className="text-3xl sm:text-4xl text-foreground tracking-[-0.07em]">
-            {grant.title}
+          <h1 className="text-2xl sm:text-3xl lg:text-4xl text-foreground tracking-[-0.07em]">
+            {grant.grant_name}
           </h1>
-          <p className="mt-2 text-lg text-card-fg/70">{grant.funder}</p>
+          <p className="mt-2 text-base sm:text-lg text-card-fg/70">
+            {grant.funding_organization}
+          </p>
 
           {/* Key details */}
-          <div className="mt-8 grid grid-cols-1 sm:grid-cols-3 gap-4">
-            <div className="rounded-xl border border-white/5 bg-card p-5">
+          <div className="mt-6 sm:mt-8 grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
+            <div className="rounded-xl border border-white/5 bg-card p-4 sm:p-5">
               <div className="flex items-center gap-2 text-xs text-card-fg/60 mb-1">
                 <DollarSign size={12} />
                 Funding Range
               </div>
-              <p className="text-lg text-foreground">
+              <p className="text-base sm:text-lg text-foreground">
                 {grant.amount_min && grant.amount_max
                   ? `${formatCurrency(grant.amount_min)} - ${formatCurrency(grant.amount_max)}`
-                  : grant.typical_award || "Contact funder"}
+                  : "Contact funder"}
               </p>
             </div>
-            <div className="rounded-xl border border-white/5 bg-card p-5">
+            <div className="rounded-xl border border-white/5 bg-card p-4 sm:p-5">
               <div className="flex items-center gap-2 text-xs text-card-fg/60 mb-1">
                 <Calendar size={12} />
                 Deadline
               </div>
-              <p className="text-lg text-foreground">
-                {grant.deadline
-                  ? new Date(grant.deadline).toLocaleDateString("en-US", {
-                      month: "long",
-                      day: "numeric",
-                      year: "numeric",
-                    })
-                  : "Rolling / Open"}
+              <p className="text-base sm:text-lg text-foreground">
+                {grant.application_deadline || "Rolling / Open"}
               </p>
             </div>
-            <div className="rounded-xl border border-white/5 bg-card p-5">
+            <div className="rounded-xl border border-white/5 bg-card p-4 sm:p-5">
               <div className="flex items-center gap-2 text-xs text-card-fg/60 mb-1">
                 <MapPin size={12} />
                 Geography
               </div>
-              <p className="text-lg text-foreground">{grant.geography}</p>
+              <p className="text-base sm:text-lg text-foreground">
+                {grant.geographic_eligibility}
+              </p>
             </div>
           </div>
 
           {/* Description */}
-          <div className="mt-8">
-            <h2 className="text-xl text-foreground tracking-[-0.03em] mb-3">
+          <div className="mt-6 sm:mt-8">
+            <h2 className="text-lg sm:text-xl text-foreground tracking-[-0.03em] mb-3">
               About this grant
             </h2>
-            <p className="text-card-fg leading-relaxed">{grant.description}</p>
+            <p className="text-sm sm:text-base text-card-fg leading-relaxed">
+              {grant.description}
+            </p>
           </div>
 
           {/* Eligibility */}
           <div className="mt-6">
-            <h2 className="text-xl text-foreground tracking-[-0.03em] mb-3">
-              Eligibility
+            <h2 className="text-lg sm:text-xl text-foreground tracking-[-0.03em] mb-3">
+              Eligible Organizations
             </h2>
-            <p className="text-card-fg">{grant.eligibility}</p>
+            <p className="text-sm sm:text-base text-card-fg">
+              {grant.eligible_org_types}
+            </p>
+          </div>
+
+          {/* Additional details */}
+          <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 gap-4">
+            {grant.grant_cycle && (
+              <div className="rounded-xl border border-white/5 bg-card p-4">
+                <p className="text-xs text-card-fg/60 mb-1">Grant Cycle</p>
+                <p className="text-sm text-foreground">{grant.grant_cycle}</p>
+              </div>
+            )}
+            {grant.requires_loi && (
+              <div className="rounded-xl border border-white/5 bg-card p-4">
+                <p className="text-xs text-card-fg/60 mb-1">
+                  Requires Letter of Intent
+                </p>
+                <p className="text-sm text-foreground">{grant.requires_loi}</p>
+              </div>
+            )}
+            {grant.org_budget_requirement && (
+              <div className="rounded-xl border border-white/5 bg-card p-4">
+                <p className="text-xs text-card-fg/60 mb-1">
+                  Budget Requirement
+                </p>
+                <p className="text-sm text-foreground">
+                  {grant.org_budget_requirement}
+                </p>
+              </div>
+            )}
           </div>
 
           {/* Paid-only content */}
           {hasPaid ? (
             <>
-              {grant.advice && (
-                <div className="mt-8 rounded-xl border border-primary/20 bg-primary/5 p-6">
-                  <h2 className="text-xl text-foreground tracking-[-0.03em] mb-3">
-                    Application Tips
-                  </h2>
-                  <p className="text-card-fg leading-relaxed">{grant.advice}</p>
-                </div>
-              )}
-
-              {grant.key_requirements && (
-                <div className="mt-6">
-                  <h2 className="text-xl text-foreground tracking-[-0.03em] mb-3">
-                    Key Requirements
-                  </h2>
-                  <p className="text-card-fg">{grant.key_requirements}</p>
-                </div>
-              )}
-
-              {grant.typical_award && (
-                <div className="mt-6">
-                  <h2 className="text-xl text-foreground tracking-[-0.03em] mb-3">
-                    Typical Award
-                  </h2>
-                  <p className="text-card-fg">{grant.typical_award}</p>
-                </div>
-              )}
-
               {grant.application_url && (
                 <a
                   href={grant.application_url}
@@ -215,13 +219,12 @@ export default async function GrantDetailPage({
               )}
 
               {/* Upsell to grant writing */}
-              <div className="mt-12 rounded-xl border border-white/5 bg-card p-8 text-center">
-                <h3 className="text-xl text-foreground tracking-[-0.03em]">
+              <div className="mt-10 sm:mt-12 rounded-xl border border-white/5 bg-card p-6 sm:p-8 text-center">
+                <h3 className="text-lg sm:text-xl text-foreground tracking-[-0.03em]">
                   Want us to write this grant for you?
                 </h3>
                 <p className="mt-2 text-sm text-card-fg/70 max-w-md mx-auto">
-                  Our expert grant writers can craft a winning application for
-                  this grant. Save time and increase your chances.
+                  Our expert grant writers can craft a winning application.
                 </p>
                 <a
                   href="https://www.fundsprout.ai"
@@ -236,33 +239,26 @@ export default async function GrantDetailPage({
             </>
           ) : (
             <div className="mt-8 relative">
-              <div className="rounded-xl border border-white/5 bg-card p-8 blur-sm">
+              <div className="rounded-xl border border-white/5 bg-card p-6 sm:p-8 blur-sm">
                 <h2 className="text-xl text-foreground mb-3">
-                  Application Tips
+                  Application Link & Details
                 </h2>
                 <p className="text-card-fg">
-                  Detailed advice on how to approach this grant application,
-                  what reviewers look for, and tips for success...
-                </p>
-                <h2 className="text-xl text-foreground mb-3 mt-6">
-                  Key Requirements
-                </h2>
-                <p className="text-card-fg">
-                  Specific requirements you must meet, documents you need to
-                  prepare, and eligibility criteria...
+                  Direct link to the application page, additional requirements,
+                  and tips for a successful application...
                 </p>
               </div>
               <div className="absolute inset-0 flex items-center justify-center">
-                <div className="text-center bg-background/80 rounded-2xl p-8 border border-primary/20">
-                  <Lock size={32} className="mx-auto text-card-fg/40 mb-3" />
-                  <h3 className="text-lg text-foreground tracking-[-0.03em]">
+                <div className="text-center bg-background/80 rounded-2xl p-6 sm:p-8 border border-primary/20 mx-4">
+                  <Lock size={28} className="mx-auto text-card-fg/40 mb-3" />
+                  <h3 className="text-base sm:text-lg text-foreground tracking-[-0.03em]">
                     Unlock full grant details
                   </h3>
                   <p className="mt-1 text-sm text-card-fg/70">
-                    Get application tips, key requirements, and more.
+                    Get application links, requirements, and more.
                   </p>
                   <Link
-                    href="/auth/signup"
+                    href="/get-started"
                     className="mt-4 inline-flex rounded-full bg-primary px-6 py-2.5 text-sm font-medium text-background hover:bg-secondary transition-colors"
                   >
                     Get Full Access — $199

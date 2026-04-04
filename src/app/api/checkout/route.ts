@@ -18,7 +18,7 @@ export async function POST() {
 
     // Check if already paid
     const { data: profile } = await supabase
-      .from("profiles")
+      .from("gp_profiles")
       .select("has_paid, stripe_customer_id")
       .eq("id", user.id)
       .single();
@@ -42,7 +42,7 @@ export async function POST() {
       customerId = customer.id;
 
       await supabase
-        .from("profiles")
+        .from("gp_profiles")
         .update({ stripe_customer_id: customerId })
         .eq("id", user.id);
     }

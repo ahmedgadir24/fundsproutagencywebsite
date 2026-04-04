@@ -5,6 +5,10 @@ export const metadata: Metadata = {
   title: "Fundsprout Grant Database | Find Grants That Fit",
   description:
     "Access our curated grant database updated monthly. Search by geography, grant type, and more. $199 for lifetime access.",
+  icons: {
+    icon: "/favicon.png",
+    apple: "/favicon.png",
+  },
   openGraph: {
     title: "Fundsprout Grant Database",
     description: "Find grants that fit your organization. Lifetime access for $199.",

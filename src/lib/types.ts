@@ -1,20 +1,21 @@
 export interface Grant {
   id: string;
-  title: string;
+  grant_name: string;
+  funding_organization: string;
   description: string;
-  funder: string;
+  application_url: string | null;
   amount_min: number | null;
   amount_max: number | null;
-  deadline: string | null;
-  geography: string;
-  grant_type: string;
-  eligibility: string;
+  funding_type: string; // Corporate, Foundation, Federal, State
+  application_deadline: string | null;
+  grant_cycle: string | null;
   focus_area: string;
-  application_url: string | null;
-  advice: string | null;
-  competitiveness: "low" | "medium" | "high" | null;
-  typical_award: string | null;
-  key_requirements: string | null;
+  geographic_eligibility: string;
+  eligible_org_types: string;
+  org_budget_requirement: string | null;
+  estimated_complexity: string | null; // Simple, Moderate, Complex
+  requires_loi: string | null;
+  is_active: boolean;
   created_at: string;
   updated_at: string;
 }
@@ -29,9 +30,19 @@ export interface UserProfile {
   created_at: string;
 }
 
+export interface EmailCapture {
+  id: string;
+  email: string;
+  organization_type: string | null;
+  focus_area: string | null;
+  state: string | null;
+  eligible_grant_count: number | null;
+  created_at: string;
+}
+
 export type GrantFilter = {
-  geography?: string;
-  grant_type?: string;
+  geographic_eligibility?: string;
+  funding_type?: string;
   focus_area?: string;
   search?: string;
 };
