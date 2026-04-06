@@ -26,7 +26,7 @@ export async function POST(request: Request) {
     const supabase = getAdminClient();
 
     // Fetch only from gp_ tables (not shared auth.users)
-    const [emailCapturesRes, profilesRes] = await Promise.all([
+    const [emailCapturesRes, profilesRes, eventsRes] = await Promise.all([
       supabase
         .from("gp_email_captures")
         .select("*")
@@ -35,10 +35,27 @@ export async function POST(request: Request) {
         .from("gp_profiles")
         .select("*")
         .order("created_at", { ascending: false }),
+      supabase
+        .from("gp_events")
+        .select("*")
+        .order("created_at", { ascending: false })
+        .limit(500),
     ]);
 
     const emailCaptures = emailCapturesRes.data || [];
     const profiles = profilesRes.data || [];
+    const events = eventsRes.data || [];
+
+    // CTA click breakdown
+    const ctaClicks: Record<string, number> = {};
+    let totalCtaClicks = 0;
+    events.forEach((e) => {
+      if (e.event_name === "cta_click") {
+        const button = (e.event_data as Record<string, string>)?.button || "unknown";
+        ctaClicks[button] = (ctaClicks[button] || 0) + 1;
+        totalCtaClicks++;
+      }
+    });
 
     // Compute stats — only count grant database users, not other project's users
     const totalLeads = emailCaptures.length;
@@ -86,11 +103,13 @@ export async function POST(request: Request) {
         unpaidUsers,
         recentLeads: recentLeads.length,
         conversionRate,
+        totalCtaClicks,
       },
       breakdowns: {
         orgType: orgTypeBreakdown,
         focusArea: focusAreaBreakdown,
         state: stateBreakdown,
+        ctaClicks,
       },
       emailCaptures: emailCaptures.map((e) => ({
         email: e.email,

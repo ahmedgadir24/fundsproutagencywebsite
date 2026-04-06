@@ -10,6 +10,7 @@ import {
   Download,
   Lock,
   BarChart3,
+  MousePointer,
 } from "lucide-react";
 
 interface AdminData {
@@ -17,6 +18,7 @@ interface AdminData {
     totalLeads: number;
     totalUsers: number;
     paidUsers: number;
+    totalCtaClicks: number;
     unpaidUsers: number;
     recentLeads: number;
     conversionRate: string;
@@ -25,6 +27,7 @@ interface AdminData {
     orgType: Record<string, number>;
     focusArea: Record<string, number>;
     state: Record<string, number>;
+    ctaClicks: Record<string, number>;
   };
   emailCaptures: {
     email: string;
@@ -269,7 +272,12 @@ export default function AdminPage() {
         </div>
 
         {/* Secondary stats */}
-        <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 mb-8">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-8">
+          <StatCard
+            label="CTA Button Clicks"
+            value={data.stats.totalCtaClicks}
+            icon={MousePointer}
+          />
           <StatCard
             label="Last 30 Days Leads"
             value={data.stats.recentLeads}
@@ -289,7 +297,22 @@ export default function AdminPage() {
           />
         </div>
 
-        {/* Breakdowns */}
+        {/* CTA Click Breakdown */}
+        {Object.keys(data.breakdowns.ctaClicks).length > 0 && (
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8">
+            <BreakdownTable
+              title="Button Clicks by Location"
+              data={Object.fromEntries(
+                Object.entries(data.breakdowns.ctaClicks).map(([k, v]) => [
+                  k.replace(/_/g, " ").replace(/\b\w/g, (c) => c.toUpperCase()),
+                  v,
+                ])
+              )}
+            />
+          </div>
+        )}
+
+        {/* Lead Breakdowns */}
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
           <BreakdownTable
             title="By Organization Type"

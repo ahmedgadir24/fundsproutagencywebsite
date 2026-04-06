@@ -3,6 +3,7 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { dummyGrants } from "@/lib/dummy-grants";
 import FAQAccordion from "@/components/FAQAccordion";
+import { TrackedLink } from "@/components/TrackedLink";
 import {
   Check,
   Lock,
@@ -209,13 +210,15 @@ export default function HomePage() {
 
           {/* CTAs */}
           <div className="mt-8 sm:mt-10 flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4">
-            <Link
+            <TrackedLink
               href="/get-started"
+              eventName="cta_click"
+              eventData={{ button: "hero_get_access" }}
               className="w-full sm:w-auto rounded-full bg-primary px-8 sm:px-10 py-3.5 sm:py-4 text-base font-medium text-background hover:bg-secondary transition-colors inline-flex items-center justify-center gap-2"
             >
               Get Lifetime Access — $199
               <ArrowRight size={16} />
-            </Link>
+            </TrackedLink>
           </div>
 
           <p className="mt-4 text-xs text-card-fg/30 flex items-center justify-center gap-2 sm:gap-3 flex-wrap">
@@ -228,7 +231,7 @@ export default function HomePage() {
 
           {/* Assessment CTA — visual card */}
           <div className="mt-10 sm:mt-14 mx-auto max-w-md">
-            <Link href="/assessment" className="block group">
+            <TrackedLink href="/assessment" eventName="cta_click" eventData={{ button: "hero_assessment" }} className="block group">
               <div className="rounded-2xl border border-primary/20 bg-primary/5 p-5 sm:p-6 text-center hover:border-primary/40 hover:bg-primary/8 transition-all">
                 <div className="w-10 h-10 rounded-full bg-primary/15 flex items-center justify-center mx-auto mb-3">
                   <Target size={20} className="text-primary" />
@@ -245,7 +248,7 @@ export default function HomePage() {
                   <ArrowRight size={14} />
                 </span>
               </div>
-            </Link>
+            </TrackedLink>
           </div>
 
           <p className="mt-6 text-xs text-card-fg/40">
@@ -280,13 +283,15 @@ export default function HomePage() {
             <div className="absolute bottom-0 left-0 right-0 h-48 bg-gradient-to-t from-background to-transparent pointer-events-none" />
           </div>
           <div className="text-center pt-4">
-            <Link
+            <TrackedLink
               href="/get-started"
+              eventName="cta_click"
+              eventData={{ button: "database_peek_unlock" }}
               className="inline-flex items-center gap-2 rounded-full bg-primary px-6 sm:px-8 py-3 sm:py-3.5 text-sm font-medium text-background hover:bg-secondary transition-colors"
             >
               Unlock the full database — $199
               <ArrowRight size={14} />
-            </Link>
+            </TrackedLink>
           </div>
         </div>
       </section>
@@ -361,13 +366,15 @@ export default function HomePage() {
               One successful application pays for this hundreds of times over — and you get
               lifetime access to keep finding more.
             </p>
-            <Link
+            <TrackedLink
               href="/get-started"
+              eventName="cta_click"
+              eventData={{ button: "pricing_roi_get_access" }}
               className="mt-5 inline-flex items-center gap-2 rounded-full bg-primary px-8 py-3 text-sm font-medium text-background hover:bg-secondary transition-colors"
             >
               Get Lifetime Access — $199
               <ArrowRight size={14} />
-            </Link>
+            </TrackedLink>
           </div>
         </div>
       </section>
@@ -525,13 +532,15 @@ export default function HomePage() {
           </div>
 
           <div className="mt-8 sm:mt-10">
-            <Link
+            <TrackedLink
               href="/get-started"
+              eventName="cta_click"
+              eventData={{ button: "final_cta_get_access" }}
               className="w-full sm:w-auto rounded-full bg-primary px-10 sm:px-12 py-3.5 sm:py-4 text-base font-medium text-background hover:bg-secondary transition-colors inline-flex items-center justify-center gap-2"
             >
               Get Lifetime Access — $199
               <ArrowRight size={16} />
-            </Link>
+            </TrackedLink>
           </div>
           <p className="mt-4 text-xs text-card-fg/30">
             <Shield size={11} className="inline mr-1" />

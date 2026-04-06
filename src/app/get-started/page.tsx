@@ -3,6 +3,7 @@
 import { useRef, useState, useEffect } from "react";
 import Link from "next/link";
 import Navbar from "@/components/Navbar";
+import { track } from "@/lib/track";
 import { loadStripe } from "@stripe/stripe-js";
 import type { StripeEmbeddedCheckout } from "@stripe/stripe-js";
 import {
@@ -204,7 +205,10 @@ export default function GetStartedPage() {
                   </ul>
 
                   <button
-                    onClick={openCheckout}
+                    onClick={() => {
+                      track("cta_click", { button: "checkout_get_access" });
+                      openCheckout();
+                    }}
                     className="w-full rounded-full bg-primary px-8 py-4 text-base font-medium text-background hover:bg-secondary transition-colors cursor-pointer flex items-center justify-center gap-2"
                   >
                     Get Lifetime Access
