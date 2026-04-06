@@ -50,6 +50,14 @@ function WelcomeContent() {
             setSessionEmail(data.email);
             setEmail(data.email);
           }
+          // Fire Meta Pixel Purchase event
+          if (typeof window !== "undefined" && typeof (window as any).fbq === "function") {
+            (window as any).fbq("track", "Purchase", {
+              value: 199.0,
+              currency: "USD",
+              content_name: "Grant Database Lifetime Access",
+            });
+          }
         } else {
           router.push("/get-started");
         }
