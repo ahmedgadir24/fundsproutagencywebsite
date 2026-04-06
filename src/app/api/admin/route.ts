@@ -25,13 +25,12 @@ export async function POST(request: Request) {
 
     const supabase = getAdminClient();
 
-    // Fetch all data in parallel
-    const [emailCapturesRes, usersRes, profilesRes] = await Promise.all([
+    // Fetch only from gp_ tables (not shared auth.users)
+    const [emailCapturesRes, profilesRes] = await Promise.all([
       supabase
         .from("gp_email_captures")
         .select("*")
         .order("created_at", { ascending: false }),
-      supabase.auth.admin.listUsers({ perPage: 1000 }),
       supabase
         .from("gp_profiles")
         .select("*")
@@ -39,12 +38,11 @@ export async function POST(request: Request) {
     ]);
 
     const emailCaptures = emailCapturesRes.data || [];
-    const users = usersRes.data?.users || [];
     const profiles = profilesRes.data || [];
 
-    // Compute stats
+    // Compute stats — only count grant database users, not other project's users
     const totalLeads = emailCaptures.length;
-    const totalUsers = users.length;
+    const totalUsers = profiles.length;
     const paidUsers = profiles.filter((p) => p.has_paid).length;
     const unpaidUsers = totalUsers - paidUsers;
 
