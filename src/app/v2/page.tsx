@@ -30,6 +30,35 @@ import {
 
 const PURCHASE_URL = "/get-started";
 
+function fireInitiateCheckout() {
+  if (typeof window !== "undefined" && (window as any).fbq) {
+    (window as any).fbq("track", "InitiateCheckout", {
+      value: 199.0,
+      currency: "USD",
+      content_name: "Fundsprout Grant Database",
+      content_category: "Lifetime Access",
+    });
+  }
+}
+
+function CTALink({
+  children,
+  className,
+}: {
+  children: React.ReactNode;
+  className?: string;
+}) {
+  return (
+    <Link
+      href={PURCHASE_URL}
+      className={className}
+      onClick={fireInitiateCheckout}
+    >
+      {children}
+    </Link>
+  );
+}
+
 // ─── Countdown Hook ──────────────────────────────────────────────────────────
 
 function useCountdown(targetDate: Date) {
@@ -170,13 +199,12 @@ function AssessmentFlow() {
           </div>
         </div>
         <div className="space-y-3">
-          <Link
-            href={PURCHASE_URL}
+          <CTALink
             className="inline-flex items-center gap-2 h-12 px-8 text-base font-medium rounded-full bg-primary text-background hover:bg-secondary transition-colors"
           >
             Unlock All {matchCount} Grants — $199
             <ArrowRight className="size-4" />
-          </Link>
+          </CTALink>
           <div className="flex items-center justify-center gap-1.5 text-sm text-card-fg/50">
             <Shield className="size-4 text-primary" />
             <span>7-day money-back guarantee</span>
@@ -431,12 +459,11 @@ export default function V2LandingPage() {
           >
             fundsprout
           </Link>
-          <Link
-            href={PURCHASE_URL}
+          <CTALink
             className="text-sm font-medium rounded-full bg-primary text-background px-5 py-2 hover:bg-secondary transition-colors"
           >
             Get Lifetime Access — $199
-          </Link>
+          </CTALink>
         </div>
       </header>
 
@@ -474,12 +501,11 @@ export default function V2LandingPage() {
               See Grants That Match You — Free
               <ArrowRight className="size-4" />
             </a>
-            <Link
-              href={PURCHASE_URL}
+            <CTALink
               className="inline-flex items-center justify-center text-base h-12 px-6 rounded-full border border-white/10 text-foreground hover:bg-white/5 transition-colors"
             >
               Get Lifetime Access — $199
-            </Link>
+            </CTALink>
           </div>
 
           <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 pt-2 text-sm text-card-fg/50">
@@ -618,13 +644,12 @@ export default function V2LandingPage() {
                     </div>
                   </div>
                   <div className="sm:flex-shrink-0">
-                    <Link
-                      href={PURCHASE_URL}
+                    <CTALink
                       className="inline-flex items-center gap-1.5 text-sm font-medium rounded-full bg-primary text-background px-4 py-2 hover:bg-secondary transition-colors"
                     >
                       View Full Details
                       <ExternalLink className="size-3" />
-                    </Link>
+                    </CTALink>
                   </div>
                 </div>
               </div>
@@ -807,13 +832,12 @@ export default function V2LandingPage() {
                   for life
                 </li>
               </ul>
-              <Link
-                href={PURCHASE_URL}
+              <CTALink
                 className="flex items-center justify-center gap-2 w-full mt-6 rounded-full bg-primary text-background py-3 font-medium hover:bg-secondary transition-colors"
               >
                 Get Lifetime Access
                 <ArrowRight className="size-4" />
-              </Link>
+              </CTALink>
             </div>
           </div>
         </div>
@@ -909,13 +933,12 @@ export default function V2LandingPage() {
             </span>
             .
           </p>
-          <Link
-            href={PURCHASE_URL}
+          <CTALink
             className="inline-flex items-center gap-2 h-12 px-8 text-base font-medium rounded-full bg-primary text-background hover:bg-secondary transition-colors"
           >
             Get Lifetime Access — $199
             <ArrowRight className="size-4" />
-          </Link>
+          </CTALink>
         </div>
       </section>
 
@@ -1023,12 +1046,11 @@ export default function V2LandingPage() {
               See Your Matches — Free
               <ArrowRight className="size-4" />
             </a>
-            <Link
-              href={PURCHASE_URL}
+            <CTALink
               className="inline-flex items-center justify-center h-12 px-6 text-base rounded-full border border-white/10 text-foreground hover:bg-white/5 transition-colors"
             >
               Get Lifetime Access — $199
-            </Link>
+            </CTALink>
           </div>
 
           <div className="flex items-center justify-center gap-1.5 text-sm text-card-fg/40 pt-4">
@@ -1043,13 +1065,12 @@ export default function V2LandingPage() {
 
       {/* ── STICKY MOBILE CTA ── */}
       <div className="fixed bottom-0 left-0 right-0 z-40 border-t border-white/5 bg-background/95 backdrop-blur-md p-3 sm:hidden safe-area-bottom">
-        <Link
-          href={PURCHASE_URL}
+        <CTALink
           className="flex items-center justify-center gap-2 w-full h-11 text-base font-medium rounded-full bg-primary text-background hover:bg-secondary transition-colors"
         >
           Get Lifetime Access — $199
           <ArrowRight className="size-4" />
-        </Link>
+        </CTALink>
         <p className="text-center text-[10px] text-card-fg/40 mt-1">
           ✅ 7-day money-back guarantee
         </p>

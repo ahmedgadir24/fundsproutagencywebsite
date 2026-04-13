@@ -207,6 +207,14 @@ export default function GetStartedPage() {
                   <button
                     onClick={() => {
                       track("cta_click", { button: "checkout_get_access" });
+                      if (typeof window !== "undefined" && (window as any).fbq) {
+                        (window as any).fbq("track", "InitiateCheckout", {
+                          value: 199.0,
+                          currency: "USD",
+                          content_name: "Fundsprout Grant Database",
+                          content_category: "Lifetime Access",
+                        });
+                      }
                       openCheckout();
                     }}
                     className="w-full rounded-full bg-primary px-8 py-4 text-base font-medium text-background hover:bg-secondary transition-colors cursor-pointer flex items-center justify-center gap-2"
