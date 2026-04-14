@@ -8,15 +8,8 @@ export default function SuccessPage() {
   const router = useRouter();
 
   useEffect(() => {
-    // Fire Meta Pixel Purchase event
-    if (typeof window !== "undefined" && (window as any).fbq) {
-      (window as any).fbq("track", "Purchase", {
-        value: 199.0,
-        currency: "USD",
-        content_name: "Fundsprout Grant Database",
-        content_type: "product",
-      });
-    }
+    // Purchase pixel fires ONLY on /welcome after Stripe session verification
+    // Removed duplicate fbq('track', 'Purchase') here to prevent double-counting
 
     // Check for session_id and redirect to welcome
     const params = new URLSearchParams(window.location.search);
